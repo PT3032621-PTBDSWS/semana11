@@ -1,54 +1,45 @@
 {% extends "base.html" %}
-{% block content %}
-  <div class="py-4">
-    <h1 class="display-5">Olá, {{ greeting }}!</h1>
-    <p class="lead">Prazer em conhecê-lo!</p>
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Flasky{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Olá, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
+    {% if not known %}
+    <p>Prazer em conhecê-lo!</p>
+    {% else %}
+    <p>Feliz em vê-lo novamente!</p>
+    {% endif %}
     <p>E-mail enviado para o <strong>Administrador do sistema</strong>, notificando o cadastro de um novo usuário.</p>
+</div>
+{{ wtf.quick_form(form) }}
 
-    <hr>
-
-    <form method="post" class="mb-4">
-      <div class="mb-3">
-        <label class="form-label"><strong>Qual é o seu nome?</strong></label>
-        <input name="nome" class="form-control" placeholder="Nome completo">
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Prontuário (opcional)</label>
-        <input name="prontuario" class="form-control" placeholder="Prontuário">
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Usuário (identificador)</label>
-        <input name="usuario" class="form-control" placeholder="username">
-      </div>
-
-      <div class="form-check mb-3">
-        <input class="form-check-input" type="checkbox" value="on" id="send_mail" name="send_mail">
-        <label class="form-check-label" for="send_mail">Deseja enviar e-mail para flaskaulasweb@zohomail.com?</label>
-      </div>
-
-      <button class="btn btn-outline-primary" type="submit">Submit</button>
-    </form>
-
-    <h2 class="mt-5">Relação de usuários cadastrados</h2>
-    <table class="table user-list">
-      <thead>
-        <tr>
-          <th>Nome do usuário</th>
-          <th>Prontuário</th>
-          <th>Usuário</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for u in users %}
-          <tr>
-            <td>{{ u.nome }}</td>
-            <td>{{ u.prontuario or '' }}</td>
-            <td>{{ u.usuario }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
+<h2>Relação de usuários cadastrados</h2>
+{% if users %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome do usuário</th>
+                <th>Função</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>
+                    {% if user.role %}
+                        {{ user.role.name }}
+                    {% else %}
+                        <span>User</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-  </div>
+{% else %}
+    <p>Nenhum usuário cadastrado ainda.</p>
+{% endif %}
 {% endblock %}
